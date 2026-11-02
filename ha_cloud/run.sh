@@ -30,7 +30,8 @@ issue_cert() {
         --manual --preferred-challenges dns \
         --manual-auth-hook /hooks/deploy.sh \
         --manual-cleanup-hook /hooks/cleanup.sh \
-        --key-type "$(bashio::config 'lets_encrypt.algo')" \
+        --key-type "$( [ "$(bashio::config 'lets_encrypt.algo')" = "rsa" ] && echo rsa || echo ecdsa )" \
+        --elliptic-curve "$(bashio::config 'lets_encrypt.algo')" \
         --server "$(bashio::config 'lets_encrypt.server')" \
         "${args[@]}" --cert-name "${DOMAINS[0]}" \
         && cp -fL "$LE_DIR/live/${DOMAINS[0]}/fullchain.pem" "/ssl/$CERTFILE" \
