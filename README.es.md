@@ -1,6 +1,6 @@
 # HassDNS DNS — Add-on para Home Assistant
 
-[![Añadir repositorio a Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmavksoft%2Fha-cloud-addon)
+[![Añadir repositorio a Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmavksoft%2Fhassdns-addon)
 
 Servicio DNS dinámico propio sobre **hassdns.com**: mantiene tu IP pública siempre actualizada y renueva el certificado **Let's Encrypt por DNS-01** (TXT vía API — sin abrir puertos) para que tu Home Assistant quede accesible por HTTPS sin cortes.
 
@@ -10,7 +10,7 @@ Es una alternativa independiente a los DDNS gratuitos: la zona vive en nuestra p
 
 **Opción 1 — un click**: usa el botón de arriba y acepta en Home Assistant.
 
-**Opción 2 — manual**: Ajustes → Add-ons → Tienda de add-ons → menú ⋮ → Repositorios → añade `https://github.com/mavksoft/ha-cloud-addon` → instala **HassDNS DNS**.
+**Opción 2 — manual**: Ajustes → Add-ons → Tienda de add-ons → menú ⋮ → Repositorios → añade `https://github.com/mavksoft/hassdns-addon` → instala **HassDNS DNS**.
 
 Después: crea tu subdominio en [hassdns.com](https://hassdns.com) y copia tu **token de cuenta**.
 
