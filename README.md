@@ -1,26 +1,33 @@
 # HA Cloud DNS — Add-on para Home Assistant
 
-Réplica del add-on oficial **DuckDNS** sobre `ha-cloud.es`: mantiene tu IP
-actualizada y renueva el certificado **Let's Encrypt por DNS-01** (TXT vía API,
-sin abrir puertos) — acceso remoto HTTPS siempre válido, sin depender de terceros.
+[![Añadir repositorio a Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmavksoft%2Fha-cloud-addon)
+
+Servicio DNS dinámico propio sobre **ha-cloud.es**: mantiene tu IP pública
+siempre actualizada y renueva el certificado **Let's Encrypt por DNS-01**
+(TXT vía API — sin abrir puertos ni depender de HTTP-01) para que tu
+Home Assistant quede accesible por HTTPS sin cortes.
+
+Es una alternativa independiente a los DDNS gratuitos: la zona vive en
+nuestra propia infraestructura DNS (PowerDNS anycast), con API abierta
+para TXT (validación ACME) e IPv4+IPv6.
 
 ## Instalación
 
-1. Home Assistant → **Ajustes → Add-ons → Tienda de add-ons** → menú ⋮ →
-   **Repositorios** → añade:
-   ```
-   https://github.com/mavksoft/ha-cloud-addon
-   ```
-2. Busca **HA Cloud DNS** → Instalar.
-3. Crea tu subdominio en [ha-cloud.es](https://ha-cloud.es) (portal DNS) y
-   copia tu **token de cuenta** (rec_api.php → `?a=token`).
+**Opción 1 — un click**: usa el botón de arriba y acepta en Home Assistant.
+
+**Opción 2 — manual**: Ajustes → Add-ons → Tienda de add-ons → menú ⋮ →
+Repositorios → añade `https://github.com/mavksoft/ha-cloud-addon` →
+instala **HA Cloud DNS**.
+
+Después: crea tu subdominio en [ha-cloud.es](https://ha-cloud.es) y copia
+tu **token de cuenta** (el panel lo muestra en la ficha del registro).
 
 ## Configuración
 
 ```yaml
 domains:
   - mi-casa.ha-cloud.es
-token: "<tu api_token de 64 hex>"
+token: "<api_token de la cuenta — 64 hex>"
 seconds: 300
 lets_encrypt:
   accept_terms: true
@@ -29,20 +36,25 @@ lets_encrypt:
 ```
 
 El add-on:
-- cada `seconds` llama `api.ha-cloud.es/update?domains=…&token=…&ip=` (IP auto),
-- emite/renueva el cert LE con `certbot --manual --preferred-challenges dns`
-  (hooks que publican `_acme-challenge.<dom>` TXT vía `&txt=`/`&clear=true`),
-- copia el cert a `/ssl/` — compatible con la config HTTPS de HA y el
+
+- cada `seconds` segundos publica tu IP actual (`api.ha-cloud.es/update`),
+- emite y renueva el certificado LE con `certbot --manual
+  --preferred-challenges dns` — los hooks publican el
+  `_acme-challenge` TXT por la API y lo limpian tras validar,
+- copia el cert a `/ssl/` — compatible con la config HTTPS de HA y con el
   add-on NGINX Home Assistant SSL proxy.
 
-## Endpoint compatible DuckDNS
+## API de actualización
 
-Cualquier cliente que soporte DuckDNS funciona cambiando dominio+token:
+El endpoint sigue el formato estándar de update por URL — cualquier
+cliente dyndns que acepte un dominio+token funciona:
 
 ```
 GET https://api.ha-cloud.es/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
     [&ipv6=<ipv6>][&txt=<texto>][&clear=true]  →  "OK" | "KO"
 ```
 
-`token` = api_token de la cuenta (64 hex, sirve para todos tus dominios) o
-token del registro (40 hex).
+- `token`: api_token de la cuenta (64 hex, todos tus dominios) o token del
+  registro (40 hex).
+- `ip` vacío = la IP de quien llama.
+- `txt`/`clear` gestionan el TXT `_acme-challenge.<dom>` (DNS-01).

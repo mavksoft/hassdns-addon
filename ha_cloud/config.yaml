@@ -1,8 +1,9 @@
 name: "HA Cloud DNS"
-description: "DNS dinámico ha-cloud.es + certificado Let's Encrypt por DNS-01 — réplica del add-on DuckDNS, independiente"
+description: "DNS dinámico en ha-cloud.es + certificado Let's Encrypt automático por DNS-01"
 version: "1.0.0"
 slug: ha_cloud
 init: false
+url: "https://github.com/mavksoft/ha-cloud-addon"
 arch:
   - aarch64
   - amd64
@@ -11,6 +12,8 @@ arch:
   - i386
 startup: services
 boot: auto
+map:
+  - ssl
 options:
   domains: []
   token: ""
