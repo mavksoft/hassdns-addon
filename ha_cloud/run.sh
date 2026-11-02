@@ -16,7 +16,7 @@ done
 # El endpoint acepta FQDN de cualquiera de nuestras zonas públicas, así que
 # enviamos el dominio completo (zona-agnóstico): mi-casa.hassdns.com, etc.
 DOMAIN_CSV=$(IFS=,; echo "${DOMAINS[*]}")
-API="https://api.hassdns.com"
+API="https://hassdns.com"
 LE_DIR="/data/letsencrypt"
 
 # ── Certificado Let's Encrypt por DNS-01 (TXT vía API HassDNS) ───────────────

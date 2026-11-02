@@ -6,7 +6,7 @@ set -e
 FQDN="${CERTBOT_DOMAIN}"
 TOKEN="$(bashio::config 'token')"
 RESP=$(curl -fsS --max-time 30 \
-  "https://api.hassdns.com/update?domains=${FQDN}&token=${TOKEN}&txt=${CERTBOT_TOKEN}" || true)
+  "https://hassdns.com/update?domains=${FQDN}&token=${TOKEN}&txt=${CERTBOT_TOKEN}" || true)
 echo "[hassdns] deploy ${FQDN} → ${RESP}"
 # TTL 60s — espera a que el TXT propague antes de que LE lo compruebe.
 sleep 65

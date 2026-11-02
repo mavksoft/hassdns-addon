@@ -29,7 +29,7 @@ lets_encrypt:
 
 L'add-on:
 
-- pubblica il tuo IP ogni `seconds` secondi (`api.hassdns.com/update`),
+- pubblica il tuo IP ogni `seconds` secondi (`hassdns.com/update`),
 - emette e rinnova il certificato LE con `certbot --manual --preferred-challenges dns` — gli hook pubblicano il TXT `_acme-challenge` via API e lo puliscono dopo,
 - copia il certificato in `/ssl/` — compatibile con la config HTTPS di HA e l'add-on NGINX SSL proxy.
 
@@ -38,7 +38,7 @@ L'add-on:
 L'endpoint segue il formato standard di update via URL — qualsiasi client dyndns con dominio+token funziona:
 
 ```
-GET https://api.hassdns.com/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
+GET https://hassdns.com/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
     [&ipv6=<ipv6>][&txt=<texto>][&clear=true]  →  "OK" | "KO"
 ```
 

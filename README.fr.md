@@ -29,7 +29,7 @@ lets_encrypt:
 
 Le module :
 
-- publie votre IP actuelle toutes les `seconds` secondes (`api.hassdns.com/update`),
+- publie votre IP actuelle toutes les `seconds` secondes (`hassdns.com/update`),
 - émet et renouvelle le certificat LE via `certbot --manual --preferred-challenges dns` — les hooks publient le TXT `_acme-challenge` par l'API puis le nettoient,
 - copie le certificat dans `/ssl/` — compatible avec la config HTTPS de HA et le module NGINX SSL proxy.
 
@@ -38,7 +38,7 @@ Le module :
 L'endpoint suit le format standard d'update par URL — tout client dyndns avec domaine+token fonctionne :
 
 ```
-GET https://api.hassdns.com/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
+GET https://hassdns.com/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
     [&ipv6=<ipv6>][&txt=<texto>][&clear=true]  →  "OK" | "KO"
 ```
 
