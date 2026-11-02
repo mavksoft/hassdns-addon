@@ -1,0 +1,28 @@
+configuration:
+  domains:
+    name: "Domínios"
+    description: "Os teus FQDN de ha-cloud.es, um por linha"
+  token:
+    name: "Token da API"
+    description: "Token da conta (64 hex) ou do registo (40 hex)"
+  seconds:
+    name: "Intervalo de atualização (segundos)"
+    description: "Com que frequência se publica o IP público"
+  lets_encrypt:
+    name: "Let's Encrypt"
+    description: "Automatic certificate via DNS-01"
+    accept_terms:
+      name: "Aceitar os ToS do Let's Encrypt"
+      description: "Necessário para emitir certificados"
+    certfile:
+      name: "Nome do ficheiro de certificado"
+      description: "Guardado em /ssl/"
+    keyfile:
+      name: "Nome do ficheiro da chave privada"
+      description: "Guardado em /ssl/"
+    algo:
+      name: "Algoritmo da chave"
+      description: "secp384r1 (predefinição), secp256r1 ou rsa"
+    server:
+      name: "Servidor ACME"
+      description: "URL do diretório Let's Encrypt"
