@@ -1,7 +1,7 @@
 configuration:
   domains:
     name: "Domaines"
-    description: "Vos FQDN ha-cloud.es, un par ligne"
+    description: "Vos FQDN hassdns.com, un par ligne"
   token:
     name: "Jeton API"
     description: "Jeton de compte (64 hex) ou d'enregistrement (40 hex)"

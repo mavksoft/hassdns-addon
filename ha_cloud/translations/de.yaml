@@ -1,7 +1,7 @@
 configuration:
   domains:
     name: "Domänen"
-    description: "Deine ha-cloud.es FQDNs, eine pro Zeile"
+    description: "Deine hassdns.com FQDNs, eine pro Zeile"
   token:
     name: "API-Token"
     description: "Konto-Token (64 hex) oder Record-Token (40 hex)"

@@ -1,10 +1,10 @@
-# HA Cloud DNS — Home Assistant add-on
+# HassDNS DNS — Home Assistant add-on
 
 **Languages:** [English](README.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Português](README.pt.md)
 
 [![Añadir repositorio a Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmavksoft%2Fha-cloud-addon)
 
-Servicio DNS dinámico propio sobre **ha-cloud.es**: mantiene tu IP pública
+Servicio DNS dinámico propio sobre **hassdns.com**: mantiene tu IP pública
 siempre actualizada y renueva el certificado **Let's Encrypt por DNS-01**
 (TXT vía API — sin abrir puertos ni depender de HTTP-01) para que tu
 Home Assistant quede accesible por HTTPS sin cortes.
@@ -19,16 +19,16 @@ para TXT (validación ACME) e IPv4+IPv6.
 
 **Opción 2 — manual**: Ajustes → Add-ons → Tienda de add-ons → menú ⋮ →
 Repositorios → añade `https://github.com/mavksoft/ha-cloud-addon` →
-instala **HA Cloud DNS**.
+instala **HassDNS DNS**.
 
-Después: crea tu subdominio en [ha-cloud.es](https://ha-cloud.es) y copia
+Después: crea tu subdominio en [hassdns.com](https://hassdns.com) y copia
 tu **token de cuenta** (el panel lo muestra en la ficha del registro).
 
 ## Configuración
 
 ```yaml
 domains:
-  - mi-casa.ha-cloud.es
+  - mi-casa.hassdns.com
 token: "<api_token de la cuenta — 64 hex>"
 seconds: 300
 lets_encrypt:
@@ -39,7 +39,7 @@ lets_encrypt:
 
 El add-on:
 
-- cada `seconds` segundos publica tu IP actual (`api.ha-cloud.es/update`),
+- cada `seconds` segundos publica tu IP actual (`api.hassdns.com/update`),
 - emite y renueva el certificado LE con `certbot --manual
   --preferred-challenges dns` — los hooks publican el
   `_acme-challenge` TXT por la API y lo limpian tras validar,
@@ -52,7 +52,7 @@ El endpoint sigue el formato estándar de update por URL — cualquier
 cliente dyndns que acepte un dominio+token funciona:
 
 ```
-GET https://api.ha-cloud.es/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
+GET https://api.hassdns.com/update?domains=mi-casa&token=<token>&ip=<ip|vacío>
     [&ipv6=<ipv6>][&txt=<texto>][&clear=true]  →  "OK" | "KO"
 ```
 

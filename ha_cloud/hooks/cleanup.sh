@@ -3,7 +3,6 @@
 set -e
 FQDN="${CERTBOT_DOMAIN}"
 TOKEN="$(bashio::config 'token')"
-SHORT="${FQDN%.ha-cloud.es}"
 curl -fsS --max-time 30 \
-  "https://api.ha-cloud.es/update?domains=${SHORT}&token=${TOKEN}&clear=true" || true
-echo "[ha-cloud] cleanup ${FQDN}"
+  "https://api.hassdns.com/update?domains=${FQDN}&token=${TOKEN}&clear=true" || true
+echo "[hassdns] cleanup ${FQDN}"

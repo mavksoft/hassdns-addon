@@ -7,18 +7,19 @@ CERTFILE="$(bashio::config 'lets_encrypt.certfile')"
 KEYFILE="$(bashio::config 'lets_encrypt.keyfile')"
 
 DOMAINS=()
-SHORTS=()
 for d in $(bashio::config 'domains'); do
     DOMAINS+=("$d")
-    SHORTS+=("${d%.ha-cloud.es}")
 done
-[ "${#DOMAINS[@]}" -gt 0 ] || { bashio::log.fatal "Configura al menos un dominio ha-cloud.es"; exit 1; }
+[ "${#DOMAINS[@]}" -gt 0 ] || { bashio::log.fatal "Configura al menos un dominio (hassdns.com o ha-cloud.es)"; exit 1; }
 [ -n "$TOKEN" ] || { bashio::log.fatal "Falta el token"; exit 1; }
 
-DOMAIN_CSV=$(IFS=,; echo "${SHORTS[*]}")
+# El endpoint acepta FQDN de cualquiera de nuestras zonas públicas, así que
+# enviamos el dominio completo (zona-agnóstico): mi-casa.hassdns.com, etc.
+DOMAIN_CSV=$(IFS=,; echo "${DOMAINS[*]}")
+API="https://api.hassdns.com"
 LE_DIR="/data/letsencrypt"
 
-# ── Certificado Let's Encrypt por DNS-01 (TXT vía API ha-cloud.es) ───────────
+# ── Certificado Let's Encrypt por DNS-01 (TXT vía API HassDNS) ───────────────
 issue_cert() {
     bashio::config 'lets_encrypt.accept_terms' || { bashio::log.info "lets_encrypt.accept_terms=false — sin cert"; return 0; }
     local args=(-d)
@@ -40,12 +41,12 @@ issue_cert() {
 }
 
 # ── Loop: IP al día + renovación del cert ────────────────────────────────────
-bashio::log.info "HA Cloud DNS iniciado — dominios: ${DOMAINS[*]} (cada ${SECONDS_WAIT}s)"
+bashio::log.info "HassDNS DNS iniciado — dominios: ${DOMAINS[*]} (cada ${SECONDS_WAIT}s)"
 issue_cert || true
 LAST_CERT=$(date +%s)
 while true; do
     RESP=$(curl -fsS --max-time 30 \
-        "https://api.ha-cloud.es/update?domains=${DOMAIN_CSV}&token=${TOKEN}&ip=" || true)
+        "${API}/update?domains=${DOMAIN_CSV}&token=${TOKEN}&ip=" || true)
     [ "$RESP" = "OK" ] && bashio::log.info "IP actualizada (${DOMAIN_CSV})" \
                       || bashio::log.warning "Update KO: ${RESP}"
     # renovación de cert: reintento diario (LE gestiona la ventana de 60 días)
