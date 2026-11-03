@@ -14,12 +14,18 @@ automático por **DNS-01** — sin abrir puertos, sin depender de terceros.
   reto por la API de ese proveedor — un solo certificado puede cubrir varios
   hostnames distintos (SANs) aunque vivan en servicios diferentes.
 
-## Instalación
+## Instalación — dos caminos
 
-1. Regístrate en [hassdns.com](https://hassdns.com) y crea tu subdominio.
-2. Copia el **token** (ficha del registro → API, 40 hex — o el api_token de
-   tu cuenta, 64 hex).
-3. Configura `domains` + `token`, acepta `lets_encrypt.accept_terms` y arranca.
+**A. Panel propio (recomendado)** — abre **HassDNS** en la barra lateral de HA
+(ingress): inicia sesión con tu usuario/contraseña o **regístrate** dentro —
+el add-on obtiene solo tu `api_token` y la lista de tus dominios (la contraseña
+nunca se guarda; solo el token en `/data` con permisos 600).
+
+**B. Manual** — regístrate en [hassdns.com](https://hassdns.com), crea tu
+subdominio, copia el **token** (del registro o el api_token de tu cuenta) y
+pon `domains` + `token` en la configuración.
+
+En ambos, activa `lets_encrypt.accept_terms` y arranca — el cert sale solo.
 
 ## Opciones
 

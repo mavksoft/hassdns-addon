@@ -11,3 +11,9 @@
 - Nombres de cert únicos por defecto (`hassdns_fullchain.pem`/`hassdns_privkey.pem`) — sin colisión con otros add-ons.
 - Multi-proveedor DNS-01: dominios `*.duckdns.org` enrutan a la API de DuckDNS (`duckdns_token`) — un cert con SANs cruzados.
 - `map: ssl:rw` — /ssl escribible.
+
+## 1.3.1
+- Registro de cuenta embebido en el panel (api_register.php + auto-login).
+
+## 1.3.2
+- DOCS/README actualizados al flujo login/register del panel.

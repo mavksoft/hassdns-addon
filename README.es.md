@@ -8,6 +8,9 @@ Es una alternativa independiente a los DDNS gratuitos: la zona vive en nuestra p
 
 ## Instalación
 
+> Desde la **1.3.x** el add-on tiene **panel propio** en la barra de HA (ingress): login/registro con tu cuenta de hassdns — los dominios se configuran solos, sin tocar tokens.
+
+
 **Opción 1 — un click**: usa el botón de arriba y acepta en Home Assistant.
 
 **Opción 2 — manual**: Ajustes → Add-ons → Tienda de add-ons → menú ⋮ → Repositorios → añade `https://github.com/mavksoft/hassdns-addon` → instala **HassDNS DNS**.
