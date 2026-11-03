@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
-# certbot manual-cleanup-hook: limpia el TXT tras la validación.
-# TOKEN/API exportados por run.sh; CERTBOT_DOMAIN lo pone certbot.
+# certbot manual-cleanup-hook: retira el TXT tras validar.
 set -e
-curl -fsS --max-time 30 \
-  "${API:-https://hassdns.com}/update?domains=${CERTBOT_DOMAIN}&token=${TOKEN}&clear=true" || true
-echo "[hassdns] cleanup ${CERTBOT_DOMAIN}"
+FQDN="${CERTBOT_DOMAIN}"
+case "$FQDN" in
+  *.duckdns.org)
+    SUB="${FQDN%.duckdns.org}"
+    curl -fsS --max-time 30 \
+      "https://www.duckdns.org/update?domains=${SUB}&token=${DDNS_TOKEN_DUCK}&txt=&clear=true" || true
+    ;;
+  *)
+    curl -fsS --max-time 30 \
+      "${API:-https://hassdns.com}/update?domains=${FQDN}&token=${TOKEN}&clear=true" || true
+    ;;
+esac
+echo "[hassdns] cleanup ${FQDN}"
