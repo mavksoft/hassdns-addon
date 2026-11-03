@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.7] — 2026-11-03
+- Logo: nuevo banner con contenedor cápsula oscuro y borde cian, con texto «HassDNS» completo y legible en modo claro y oscuro de Home Assistant.
+- Navegación: el botón «Volver a la ficha del add-on» redirige directamente a la vista de información y controles del complemento (`/hassio/addon/ha_cloud/info`).
+
 ## [1.3.6] — 2026-11-03
 - Fix CSS: estilo global para inputs de usuario, altura uniforme de 44px y corrección de autofill WebKit/Safari/Chrome.
 

@@ -216,21 +216,20 @@ details summary:hover{color:var(--accent)}
 </style>
 <script>
 function goBackHA() {
+  var target = '/hassio/addon/ha_cloud/info';
   try {
-    if (window.parent && window.parent !== window) {
-      if (window.parent.history && window.parent.history.length > 1) {
-        window.parent.history.back();
-        return;
-      }
-      window.parent.location.href = '/';
+    if (window.top && window.top !== window) {
+      window.top.location.href = target;
       return;
     }
   } catch (e) {}
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.location.href = '/';
-  }
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.location.href = target;
+      return;
+    }
+  } catch (e) {}
+  window.location.href = target;
 }
 </script>
 </head>
@@ -240,9 +239,9 @@ function goBackHA() {
     <img src="https://hassdns.com/android-chrome-192x192.png" alt="HassDNS">
     <span>Hass<b>DNS</b></span>
   </a>
-  <button type="button" class="btn-back" onclick="goBackHA()" title="Volver a Home Assistant">
+  <button type="button" class="btn-back" onclick="goBackHA()" title="Volver a la ficha del add-on en Home Assistant">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    <span>Volver a Home Assistant</span>
+    <span>Volver a la ficha del add-on</span>
   </button>
 </header>
 <main>
@@ -265,7 +264,7 @@ def page_logged(cfg):
   <div class="card-nav">
     <button type="button" class="back-link" onclick="goBackHA()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span>Volver a Home Assistant</span>
+      <span>Volver a la ficha del add-on</span>
     </button>
   </div>
   <div class="flash ok" style="display:flex;align-items:center;gap:8px">
@@ -280,7 +279,7 @@ def page_logged(cfg):
   <div style="display:flex;gap:10px;flex-wrap:wrap">
     <button type="button" class="btn-primary" onclick="goBackHA()" style="flex:1">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span>Volver al panel HA</span>
+      <span>Volver a la ficha del add-on</span>
     </button>
     <form method="POST" action="/logout" style="flex:none">
       <button type="submit" class="btn-bad" style="height:100%;padding:11px 16px">Cerrar sesión</button>
@@ -294,7 +293,7 @@ def page_login(err=""):
   <div class="card-nav">
     <button type="button" class="back-link" onclick="goBackHA()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span>Volver a Home Assistant</span>
+      <span>Volver a la ficha del add-on</span>
     </button>
   </div>
   <h1>Entra en HassDNS</h1>
