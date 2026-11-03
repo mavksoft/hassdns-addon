@@ -280,7 +280,7 @@ def page_logged(cfg):
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       <span>Volver a Home Assistant</span>
     </button>
-    <form method="POST" action="/logout" style="flex:none">
+    <form method="POST" action="logout" style="flex:none">
       <button type="submit" class="btn-bad" style="height:100%;padding:11px 16px">Cerrar sesión</button>
     </form>
   </div>
@@ -298,7 +298,7 @@ def page_login(err=""):
   <h1>Entra en HassDNS</h1>
   <p class="mut">Accede para gestionar tus subdominios y DNS dinámico en Home Assistant.</p>
   {flash}
-  <form method="POST" action="/login" class="stack">
+  <form method="POST" action="login" class="stack">
     <label>Usuario o email
       <input type="text" name="u" autocomplete="username" required autofocus placeholder="Usuario o correo electrónico">
     </label>
@@ -315,7 +315,7 @@ def page_login(err=""):
   </p>
   <details>
     <summary>¿Prefieres registrarte aquí mismo?</summary>
-    <form method="POST" action="/register" class="stack" style="margin-top:12px">
+    <form method="POST" action="register" class="stack" style="margin-top:12px">
       <label>Email
         <input name="e" type="email" required autocomplete="email" placeholder="nombre@correo.com">
       </label>

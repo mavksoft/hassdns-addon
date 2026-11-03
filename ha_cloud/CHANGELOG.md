@@ -46,3 +46,6 @@
 
 ## 1.3.5
 - Panel: rutas relativas (action=login/logout/register, refresh url=.) — bajo ingress las absolutas iban a la raíz del dominio → 404.
+
+## 1.4.0
+- Formularios del panel con rutas realmente relativas (action=login/register/logout sin barra) — la 1.3.5 no llegó a las acciones por el markup nuevo → 404 real en login/registro. Versión restablecida sobre la línea 1.3.x.
