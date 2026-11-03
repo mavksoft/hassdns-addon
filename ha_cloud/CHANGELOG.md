@@ -17,3 +17,6 @@
 
 ## 1.3.2
 - DOCS/README actualizados al flujo login/register del panel.
+
+## 1.3.3
+- duckdns_token traducido en los 6 idiomas (aparecía crudo sin traducción).

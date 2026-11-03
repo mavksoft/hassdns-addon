@@ -5,6 +5,9 @@ configuration:
   token:
     name: "Token API"
     description: "Token dell'account (64 hex) o del record (40 hex)"
+  duckdns_token:
+    name: "Token del provider esterno"
+    description: "Token di un'altra zona compatibile (es. duckdns.org) — solo se aggiungi i suoi domini"
   seconds:
     name: "Intervallo di aggiornamento (secondi)"
     description: "Ogni quanto viene pubblicato l'IP pubblico"

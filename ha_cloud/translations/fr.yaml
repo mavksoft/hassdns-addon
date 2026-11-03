@@ -5,6 +5,9 @@ configuration:
   token:
     name: "Jeton API"
     description: "Jeton de compte (64 hex) ou d'enregistrement (40 hex)"
+  duckdns_token:
+    name: "Token du fournisseur externe"
+    description: "Token d'une autre zone compatible (p. ex. duckdns.org) — seulement si vous ajoutez ses domaines"
   seconds:
     name: "Intervalle de mise à jour (secondes)"
     description: "Fréquence de publication de l'IP publique"
