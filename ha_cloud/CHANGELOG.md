@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.5
+- Rediseño completo de la interfaz ingress: paridad visual con hassdns.com (fondo sutil de red y domótica, tarjeta centrada en ambos ejes con glassmorphism, tipografía General Sans).
+- Botón «Volver a Home Assistant» en la cabecera y tarjeta para retroceder y salir del panel sin quedar atrapado en la vista Ingress.
+
+
 ## 1.1.0
 - Rebranding a HassDNS (hassdns.com como marca principal).
 - Multi-zona: acepta dominios hassdns.com y ha-cloud.es; endpoint canónico hassdns.com (zona-agnóstico, envía el FQDN completo).
