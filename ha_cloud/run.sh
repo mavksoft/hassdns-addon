@@ -35,8 +35,9 @@ issue_cert() {
         --elliptic-curve "$(bashio::config 'lets_encrypt.algo')" \
         --server "$(bashio::config 'lets_encrypt.server')" \
         "${args[@]}" --cert-name "${DOMAINS[0]}" \
-        && cp -fL "$LE_DIR/live/${DOMAINS[0]}/fullchain.pem" "/ssl/$CERTFILE" \
-        && cp -fL "$LE_DIR/live/${DOMAINS[0]}/privkey.pem"  "/ssl/$KEYFILE" \
+        && rm -f "/ssl/$CERTFILE" "/ssl/$KEYFILE" \
+        && cp -L "$LE_DIR/live/${DOMAINS[0]}/fullchain.pem" "/ssl/$CERTFILE" \
+        && cp -L "$LE_DIR/live/${DOMAINS[0]}/privkey.pem"  "/ssl/$KEYFILE" \
         && bashio::log.info "Cert LE → /ssl/$CERTFILE"
 }
 
