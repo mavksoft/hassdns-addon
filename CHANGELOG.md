@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.3.9] — 2026-11-03
+- Fix navegación: retroceso de historial (history.back) sin errores 404 de Ingress.
+
 ## [1.3.8] — 2026-11-03
 - Logo e icono: fondo 100% transparente en logo.png e icon.png (sin caja negra), y texto «Hass» oscuro (#0f172a) + «DNS» en cian (#0284c7) para contraste total en Home Assistant.
 

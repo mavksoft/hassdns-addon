@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.9
+- Fix navegación: el botón «Volver a Home Assistant» usa de nuevo el retroceso en historial (history.back en parent/top), evitando errores 404 al navegar fuera del contexto Ingress.
+
 ## 1.3.8
 - Logo e icono: fondo 100% transparente en logo.png e icon.png (sin caja negra cuadrada), y texto «Hass» en gris oscuro pizarra (#0f172a) + «DNS» en cian (#0284c7) para contraste y legibilidad perfecta sobre la tarjeta blanca de Home Assistant sin recortes de texto.
 
