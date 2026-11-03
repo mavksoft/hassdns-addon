@@ -20,3 +20,6 @@
 
 ## 1.3.3
 - duckdns_token traducido en los 6 idiomas (aparecía crudo sin traducción).
+
+## 1.3.4
+- Dockerfile: copia /panel + apk python3 (la UI daba 502 Bad Gateway — app.py no existia en la imagen).
