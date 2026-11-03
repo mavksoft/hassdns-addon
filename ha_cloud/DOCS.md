@@ -9,9 +9,10 @@ automático por **DNS-01** — sin abrir puertos, sin depender de terceros.
 - Emite y renueva un certificado Let's Encrypt por reto DNS (TXT
   `_acme-challenge` publicado vía API) — vale incluso con CG-NAT.
 - Copia el cert a `/ssl/` para que Home Assistant sirva HTTPS válido.
-- **Multi-proveedor**: si añades un dominio `*.duckdns.org` y configuras
-  `duckdns_token`, el reto de ese dominio se publica por la API de DuckDNS —
-  un solo certificado puede cubrir ambos hostnames (SANs).
+- **Multi-proveedor**: los dominios de zonas externas (`*.duckdns.org` u
+  otros proveedores con el formato estándar de update por URL) publican su
+  reto por la API de ese proveedor — un solo certificado puede cubrir varios
+  hostnames distintos (SANs) aunque vivan en servicios diferentes.
 
 ## Instalación
 
@@ -26,7 +27,7 @@ automático por **DNS-01** — sin abrir puertos, sin depender de terceros.
 |---|---|
 | `domains` | Lista de FQDN tuyos (`*.hassdns.com`, `*.ha-cloud.es`, `*.duckdns.org`). |
 | `token` | api_token de cuenta (64 hex) o token del registro (40 hex). |
-| `duckdns_token` | Token de duckdns.org — solo si añades dominios `*.duckdns.org`. |
+| `duckdns_token` | Token del proveedor externo — solo si incluyes dominios de esa zona (p. ej. `*.duckdns.org`). |
 | `seconds` | Intervalo de actualización de IP (mínimo 60). |
 | `lets_encrypt.accept_terms` | Aceptar el ToS de Let's Encrypt (obligatorio para el cert). |
 | `lets_encrypt.certfile` / `keyfile` | Nombre destino en `/ssl/` (por defecto `hassdns_fullchain.pem` / `hassdns_privkey.pem`). |
@@ -45,12 +46,23 @@ http:
 ```
 
 **Un solo cert, varias URLs**: incluye en `domains` todos los hostnames que
-quieras (`mavksoft.hassdns.com` + `mavksoft.duckdns.org` con su
-`duckdns_token`) — certbot emite UN certificado con todos los SANs y todas
+quieras — de nuestras zonas o de un proveedor externo compatible (con su
+`duckdns_token`) — y certbot emite UN certificado con todos los SANs: todas
 las URLs responden con candado.
 
 Si otro add-on ya gestiona `/ssl/fullchain.pem`, o desinstálalo o mantén los
 nombres propios y apunta cada servicio a su fichero.
+
+## Migración desde otro add-on DDNS
+
+Si vienes de otro add-on que ya emite a `/ssl/fullchain.pem`:
+
+1. Mantén nuestros nombres propios (`hassdns_fullchain.pem` /
+   `hassdns_privkey.pem`) — no hace falta pisar nada.
+2. Cambia `http:` para apuntar a los ficheros nuevos y reinicia HA.
+3. Si la URL anterior debe seguir funcionando, añade su dominio a `domains`
+   con el token del proveedor (`duckdns_token`) — un solo cert cubre ambas.
+4. Cuando todo funcione, desinstala el add-on anterior.
 
 ## Solución de problemas
 
