@@ -42,6 +42,7 @@ issue_cert() {
 
 # ── Loop: IP al día + renovación del cert ────────────────────────────────────
 bashio::log.info "HassDNS DNS iniciado — dominios: ${DOMAINS[*]} (cada ${SECONDS_WAIT}s)"
+export TOKEN API   # los hooks de certbot (bash plano) los heredan del entorno
 issue_cert || true
 LAST_CERT=$(date +%s)
 while true; do

@@ -1,12 +1,10 @@
-#!/usr/bin/with-contenv bashio
-# certbot manual-auth-hook: publica el TXT _acme-challenge.<fqdn> vía API.
-# CERTBOT_DOMAIN (ej. mi-casa.hassdns.com) — el endpoint reconoce el FQDN de
-# cualquiera de nuestras zonas, así que se envía completo (zona-agnóstico).
+#!/usr/bin/env bash
+# certbot manual-auth-hook (DNS-01): publica el TXT _acme-challenge.<fqdn> vía API.
+# TOKEN y API los exporta run.sh; CERTBOT_DOMAIN y CERTBOT_VALIDATION los pone
+# certbot. NO usar with-contenv aquí: resetea el entorno y pierde las CERTBOT_*.
 set -e
-FQDN="${CERTBOT_DOMAIN}"
-TOKEN="$(bashio::config 'token')"
 RESP=$(curl -fsS --max-time 30 \
-  "https://hassdns.com/update?domains=${FQDN}&token=${TOKEN}&txt=${CERTBOT_TOKEN}" || true)
-echo "[hassdns] deploy ${FQDN} → ${RESP}"
+  "${API:-https://hassdns.com}/update?domains=${CERTBOT_DOMAIN}&token=${TOKEN}&txt=${CERTBOT_VALIDATION}" || true)
+echo "[hassdns] deploy ${CERTBOT_DOMAIN} → ${RESP}"
 # TTL 60s — espera a que el TXT propague antes de que LE lo compruebe.
 sleep 65

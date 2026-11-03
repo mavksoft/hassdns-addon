@@ -1,8 +1,7 @@
-#!/usr/bin/with-contenv bashio
+#!/usr/bin/env bash
 # certbot manual-cleanup-hook: limpia el TXT tras la validación.
+# TOKEN/API exportados por run.sh; CERTBOT_DOMAIN lo pone certbot.
 set -e
-FQDN="${CERTBOT_DOMAIN}"
-TOKEN="$(bashio::config 'token')"
 curl -fsS --max-time 30 \
-  "https://hassdns.com/update?domains=${FQDN}&token=${TOKEN}&clear=true" || true
-echo "[hassdns] cleanup ${FQDN}"
+  "${API:-https://hassdns.com}/update?domains=${CERTBOT_DOMAIN}&token=${TOKEN}&clear=true" || true
+echo "[hassdns] cleanup ${CERTBOT_DOMAIN}"
