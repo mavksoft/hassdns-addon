@@ -42,8 +42,17 @@ issue_cert() {
 }
 
 # ── Loop: IP al día + renovación del cert ────────────────────────────────────
+# Config guardada por el panel (login con usuario+password → api_token+dominios)
+if [ -f /data/panel_config.json ]; then
+  PC=$(python3 -c "import json,sys;c=json.load(open('/data/panel_config.json'));print(c.get('api_token','')+'|'+','.join(d['name'] for d in c.get('domains',[])))" 2>/dev/null || true)
+  PTOK="${PC%%|*}"; PDOMS="${PC#*|}"
+  if [ -n "$PTOK" ] && [ "$PTOK" != "$PC" ]; then TOKEN="$PTOK"; export TOKEN; fi
+  if [ -n "$PDOMS" ] && [ "$PDOMS" != "$PC" ]; then IFS=',' read -ra DOMAINS <<< "$PDOMS"; fi
+fi
+export TOKEN API DDNS_TOKEN_DUCK
 bashio::log.info "HassDNS DNS iniciado — dominios: ${DOMAINS[*]} (cada ${SECONDS_WAIT}s)"
 DDNS_TOKEN_DUCK=$(bashio::config 'duckdns_token' 2>/dev/null || echo '')
+python3 /panel/app.py &
 export TOKEN API DDNS_TOKEN_DUCK   # los hooks de certbot (bash plano) los heredan del entorno
 issue_cert || true
 LAST_CERT=$(date +%s)
