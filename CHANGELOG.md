@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.3.8] — 2026-11-03
+- Logo e icono: fondo 100% transparente en logo.png e icon.png (sin caja negra), y texto «Hass» oscuro (#0f172a) + «DNS» en cian (#0284c7) para contraste total en Home Assistant.
+
 ## [1.3.7] — 2026-11-03
 - Logo: nuevo banner con contenedor cápsula oscuro y borde cian, con texto «HassDNS» completo y legible en modo claro y oscuro de Home Assistant.
 - Navegación: el botón «Volver a la ficha del add-on» redirige directamente a la vista de información y controles del complemento (`/hassio/addon/ha_cloud/info`).
