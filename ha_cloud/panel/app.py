@@ -198,7 +198,7 @@ button.btn-bad{
 }
 button.btn-bad:hover{background:rgba(248,113,113,0.12)}
 .dom-row{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);
+  display:flex;flex-direction:row;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);
   border:1px solid var(--line);border-radius:8px;margin-bottom:8px;
 }
 .dom-tag{

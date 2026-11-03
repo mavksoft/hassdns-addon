@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2
+- Fix CSS: `label{flex-direction:column}` del rediseño apilaba las filas de subdominios — `.dom-row` ahora fuerza `flex-direction:row`.
+
+
 ## 1.4.1
 - Panel: checkboxes para elegir qué subdominios se sincronizan (guarda `selected` en /data; run.sh filtra por ella; guardar sin marcas reactiva todos). La pestaña Configuración sigue como fallback manual.
 
