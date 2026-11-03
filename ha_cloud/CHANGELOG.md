@@ -1,5 +1,8 @@
 # Changelog
 
+
+## 1.4.0
+- Formularios del panel con rutas realmente relativas (action=login/register/logout sin barra) — la 1.3.5 no llegó a las acciones por el markup nuevo → 404 real en login/registro. Versión restablecida sobre la línea 1.3.x.
 ## 1.3.9
 - Fix navegación: el botón «Volver a Home Assistant» usa de nuevo el retroceso en historial (history.back en parent/top), evitando errores 404 al navegar fuera del contexto Ingress.
 
@@ -46,6 +49,3 @@
 
 ## 1.3.5
 - Panel: rutas relativas (action=login/logout/register, refresh url=.) — bajo ingress las absolutas iban a la raíz del dominio → 404.
-
-## 1.4.0
-- Formularios del panel con rutas realmente relativas (action=login/register/logout sin barra) — la 1.3.5 no llegó a las acciones por el markup nuevo → 404 real en login/registro. Versión restablecida sobre la línea 1.3.x.
