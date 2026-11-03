@@ -4,6 +4,25 @@
 - Rediseño completo de la interfaz ingress: paridad visual con hassdns.com (fondo sutil de red y domótica, tarjeta centrada en ambos ejes con glassmorphism, tipografía General Sans).
 - Botón «Volver a Home Assistant» en la cabecera y tarjeta para retroceder y salir del panel sin quedar atrapado en la vista Ingress.
 
+## 1.3.4
+- Dockerfile: copia /panel + apk python3 (la UI daba 502 Bad Gateway — app.py no existia en la imagen).
+
+## 1.3.3
+- duckdns_token traducido en los 6 idiomas (aparecía crudo sin traducción).
+
+## 1.3.2
+- DOCS/README actualizados al flujo login/register del panel.
+
+## 1.3.1
+- Registro de cuenta embebido en el panel (api_register.php + auto-login).
+
+## 1.3.0
+- Panel propio por ingress (login usuario+pass → api_token+dominios a /data, password nunca persiste, config 600) + run.sh usa la config del panel como override.
+
+## 1.2.0
+- Nombres de cert únicos por defecto (`hassdns_fullchain.pem`/`hassdns_privkey.pem`) — sin colisión con otros add-ons.
+- Multi-proveedor DNS-01: dominios `*.duckdns.org` enrutan a la API de DuckDNS (`duckdns_token`) — un cert con SANs cruzados.
+- `map: ssl:rw` — /ssl escribible.
 
 ## 1.1.0
 - Rebranding a HassDNS (hassdns.com como marca principal).
@@ -11,20 +30,3 @@
 
 ## 1.0.0
 - Primera versión: update de IP + certificado Let's Encrypt por DNS-01.
-
-## 1.2.0
-- Nombres de cert únicos por defecto (`hassdns_fullchain.pem`/`hassdns_privkey.pem`) — sin colisión con otros add-ons.
-- Multi-proveedor DNS-01: dominios `*.duckdns.org` enrutan a la API de DuckDNS (`duckdns_token`) — un cert con SANs cruzados.
-- `map: ssl:rw` — /ssl escribible.
-
-## 1.3.1
-- Registro de cuenta embebido en el panel (api_register.php + auto-login).
-
-## 1.3.2
-- DOCS/README actualizados al flujo login/register del panel.
-
-## 1.3.3
-- duckdns_token traducido en los 6 idiomas (aparecía crudo sin traducción).
-
-## 1.3.4
-- Dockerfile: copia /panel + apk python3 (la UI daba 502 Bad Gateway — app.py no existia en la imagen).
