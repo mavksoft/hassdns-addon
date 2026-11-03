@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1
+- Panel: checkboxes para elegir qué subdominios se sincronizan (guarda `selected` en /data; run.sh filtra por ella; guardar sin marcas reactiva todos). La pestaña Configuración sigue como fallback manual.
+
+
 
 ## 1.4.0
 - Formularios del panel con rutas realmente relativas (action=login/register/logout sin barra) — la 1.3.5 no llegó a las acciones por el markup nuevo → 404 real en login/registro. Versión restablecida sobre la línea 1.3.x.

@@ -254,8 +254,17 @@ __BODY__
 
 def page_logged(cfg):
     doms = cfg.get("domains", [])
+    sel = set(cfg.get("selected") or [d["name"] for d in doms])
     if doms:
-        rows = "".join(f'<div class="dom-row"><span class="dom-tag">{d.get("type","A")}</span><span class="dom-name">{d["name"]}</span><span class="dom-badge">✓ Activo</span></div>' for d in doms)
+        rows = "".join(
+            f'<label class="dom-row" style="cursor:pointer">'
+            f'<input type="checkbox" name="dom" value="{d["name"]}"{" checked" if d["name"] in sel else ""} '
+            f'style="accent-color:var(--accent,#22d3ee);width:16px;height:16px;flex:none">'
+            f'<span class="dom-tag">{d.get("type","A")}</span><span class="dom-name">{d["name"]}</span>'
+            f'<span class="dom-badge">{"✓ Activo" if d["name"] in sel else "Pausado"}</span></label>'
+            for d in doms)
+        rows = ('<form method="POST" action="select" style="margin-bottom:16px">' + rows +
+                '<button type="submit" class="btn-primary" style="width:100%;margin-top:12px">Guardar selección</button></form>')
     else:
         rows = '<div class="mut" style="padding:12px 0;text-align:center;font-size:.9rem">Sin subdominios registrados aún. Créalos en <a href="https://hassdns.com/subdomains.php" target="_blank" rel="noopener">hassdns.com</a>.</div>'
     
@@ -268,10 +277,10 @@ def page_logged(cfg):
   </div>
   <div class="flash ok" style="display:flex;align-items:center;gap:8px">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-    <span><b>Sesión activa</b> — {len(doms)} dominio(s) en sincronización</span>
+    <span><b>Sesión activa</b> — {len(sel)} de {len(doms)} dominio(s) en sincronización</span>
   </div>
   <h1 style="font-size:1.35rem;margin:12px 0 10px">Tus subdominios</h1>
-  <div style="margin-bottom:16px">{rows}</div>
+  {rows}
   <p class="mut" style="font-size:.85rem;line-height:1.45;margin-bottom:20px">
     El add-on actualiza automáticamente la IP pública y gestiona la emisión y renovación del certificado SSL Let's Encrypt por DNS-01.
   </p>
@@ -349,6 +358,18 @@ class H(http.server.BaseHTTPRequestHandler):
         self._send(PAGE.replace("__BODY__", body))
     def do_POST(self):
         p = self.path.split("?")[0]
+        if p == "/select":
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > 8192: n = 0
+            from urllib.parse import parse_qs
+            sel = parse_qs(self.rfile.read(n).decode() if n else "").get("dom", [])
+            cfg = load_cfg()
+            if sel:
+                cfg["selected"] = sel
+            else:
+                cfg.pop("selected", None)
+            save_cfg(cfg)
+            return self._send('<meta http-equiv="refresh" content="0;url=.">')
         if p == "/logout":
             save_cfg({})
             return self._send('<meta http-equiv="refresh" content="0;url=.">')

@@ -44,7 +44,7 @@ issue_cert() {
 # ── Loop: IP al día + renovación del cert ────────────────────────────────────
 # Config guardada por el panel (login con usuario+password → api_token+dominios)
 if [ -f /data/panel_config.json ]; then
-  PC=$(python3 -c "import json,sys;c=json.load(open('/data/panel_config.json'));print(c.get('api_token','')+'|'+','.join(d['name'] for d in c.get('domains',[])))" 2>/dev/null || true)
+  PC=$(python3 -c "import json,sys;c=json.load(open('/data/panel_config.json'));print(c.get('api_token','')+'|'+','.join(d['name'] for d in c.get('domains',[]) if 'selected' not in c or d['name'] in c['selected']))" 2>/dev/null || true)
   PTOK="${PC%%|*}"; PDOMS="${PC#*|}"
   if [ -n "$PTOK" ] && [ "$PTOK" != "$PC" ]; then TOKEN="$PTOK"; export TOKEN; fi
   if [ -n "$PDOMS" ] && [ "$PDOMS" != "$PC" ]; then IFS=',' read -ra DOMAINS <<< "$PDOMS"; fi
