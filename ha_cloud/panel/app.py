@@ -2,10 +2,12 @@
 # HassDNS panel — mini-UI tras ingress de HA (la auth ya la hace HA).
 # Seguridad: solo escucha el puerto de ingress (supervisor proxyfica y autentica),
 # password NUNCA se persiste — solo el api_token resultante (config 600).
-import json, os, ssl, urllib.request, http.server, secrets, subprocess
+import json, os, ssl, urllib.request, http.server, secrets, subprocess, threading
 
 DATA = "/data/panel_config.json" if os.path.exists("/data") else "/tmp/panel_config.json"
 API  = "https://hassdns.com"
+SUP       = "http://supervisor"
+SUP_TOKEN = os.environ.get("SUPERVISOR_TOKEN", "")
 
 def load_cfg():
     try: return json.load(open(DATA))
@@ -17,6 +19,34 @@ def save_cfg(c):
     try: os.chmod(tmp, 0o600)
     except Exception: pass
     os.replace(tmp, DATA)
+
+def _sup(method, path, body=None):
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(SUP + path, data=data, method=method,
+        headers={"Authorization": "Bearer " + SUP_TOKEN, "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=15) as r:
+        return json.loads(r.read())
+
+def ha_apply(domains, token):
+    # Escribe domains/token en las OPCIONES del add-on (lo que ve la pestaña
+    # Configuración) y reinicia para aplicarlas: fuente única = opciones del add-on.
+    if not SUP_TOKEN:
+        return False
+    try:
+        info = _sup("GET", "/addons/self/info")
+        opts = (info.get("data") or {}).get("options") or {}
+    except Exception:
+        opts = {}
+    opts["domains"] = domains
+    opts["token"]   = token
+    try:
+        _sup("POST", "/addons/self/options", {"options": opts})
+    except Exception:
+        return False
+    # El reinicio mata este proceso: con retardo para que la respuesta HTTP
+    # llegue antes al navegador.
+    threading.Timer(1.5, lambda: _sup("POST", "/addons/self/restart")).start()
+    return True
 
 def api_register(email, pw):
     req = urllib.request.Request(API + "/api_register.php",
@@ -336,6 +366,14 @@ def page_login(err=""):
   </details>
 </div>"""
 
+APPLYING = ('<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="8;url=.">'
+    '<title>HassDNS</title><body style="font:15px \'General Sans\',system-ui,sans-serif;'
+    'background:#07090e;color:#f4f7f8;display:flex;align-items:center;justify-content:center;'
+    'min-height:100vh;margin:0;text-align:center;padding:24px">'
+    '<div><p style="color:#2dd4bf;font-weight:600;font-size:1.05rem;margin:0 0 8px">Configuración aplicada ✓</p>'
+    '<p style="color:#a9bcc4;margin:0">Reiniciando el add-on para aplicar los cambios…<br>'
+    'Esta página volverá en unos segundos.</p></div></body>')
+
 class H(http.server.BaseHTTPRequestHandler):
     def _send(self, body, code=200, ctype="text/html; charset=utf-8"):
         if isinstance(body, str): body = body.encode("utf-8")
@@ -369,10 +407,13 @@ class H(http.server.BaseHTTPRequestHandler):
             else:
                 cfg.pop("selected", None)
             save_cfg(cfg)
-            return self._send('<meta http-equiv="refresh" content="0;url=.">')
+            apply_doms = sel if sel else [d["name"] for d in cfg.get("domains", [])]
+            ha_apply(apply_doms, cfg.get("api_token", ""))
+            return self._send(APPLYING)
         if p == "/logout":
             save_cfg({})
-            return self._send('<meta http-equiv="refresh" content="0;url=.">')
+            ha_apply([], "")
+            return self._send(APPLYING)
         if p == "/register":
             f = self._form()
             e, p2 = (f.get("e", "").strip().lower(), f.get("p2", ""))
@@ -384,7 +425,8 @@ class H(http.server.BaseHTTPRequestHandler):
             r2 = api_login(e, p2)
             if r2.get("ok"):
                 save_cfg({"api_token": r2["api_token"], "domains": r2.get("domains", [])})
-                return self._send('<meta http-equiv="refresh" content="0;url=.">')
+                ha_apply([d["name"] for d in r2.get("domains", [])], r2["api_token"])
+                return self._send(APPLYING)
             return self._send(PAGE.replace("__BODY__", page_login("Cuenta creada correctamente — inicia sesión")))
         if p != "/login":
             return self._send(b"404 Not Found", 404, "text/plain")
@@ -396,7 +438,8 @@ class H(http.server.BaseHTTPRequestHandler):
         if not r.get("ok"):
             return self._send(PAGE.replace("__BODY__", page_login(r.get("error") or "Credenciales incorrectas")))
         save_cfg({"api_token": r["api_token"], "domains": r.get("domains", [])})
-        self._send('<meta http-equiv="refresh" content="0;url=.">')
+        ha_apply([d["name"] for d in r.get("domains", [])], r["api_token"])
+        self._send(APPLYING)
 
 if __name__ == "__main__":
     http.server.HTTPServer(("0.0.0.0", 8099), H).serve_forever()
