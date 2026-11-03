@@ -17,6 +17,17 @@ def save_cfg(c):
     os.chmod(tmp, 0o600)
     os.replace(tmp, DATA)
 
+def api_register(email, pw):
+    req = urllib.request.Request(API + "/api_register.php",
+        data=json.dumps({"email": email, "password": pw}).encode(),
+        headers={"Content-Type": "application/json"}, method="POST")
+    ctx = ssl.create_default_context()
+    try:
+        with urllib.request.urlopen(req, timeout=15, context=ctx) as r:
+            return json.loads(r.read())
+    except Exception as e:
+        return {"error": str(e)}
+
 def api_login(user, pw):
     req = urllib.request.Request(API + "/api_login.php",
         data=json.dumps({"user": user, "pass": pw}).encode(),
@@ -51,7 +62,11 @@ def page_login(err=""):
     return (("<div class=err>"+err+"</div>" if err else "") +
         '<div class=card><form method=POST action=/login><label>Usuario / email</label><input name=u required autocomplete=username>'
         '<label>Contraseña</label><input name=p type=password required autocomplete=current-password>'
-        '<button>Iniciar sesión</button></form></div>')
+        '<button>Iniciar sesión</button></form>'
+        '<details style="margin-top:16px"><summary style="cursor:pointer;color:#38bdf8;font-size:.85rem">¿Sin cuenta? Regístrate</summary>'
+        '<form method=POST action=/register style="margin-top:12px"><label>Email</label><input name=e type=email required autocomplete=email>'
+        '<label>Contraseña (mín. 8)</label><input name=p2 type=password required minlength=8 autocomplete=new-password>'
+        '<button>Crear cuenta</button></form></details></div>')
 
 class H(http.server.BaseHTTPRequestHandler):
     def _send(self, body, code=200, ctype="text/html"):
@@ -70,6 +85,19 @@ class H(http.server.BaseHTTPRequestHandler):
         self._send(PAGE.replace("__BODY__", page_logged(cfg) if cfg.get("api_token") else page_login()))
     def do_POST(self):
         if self.path == "/logout": save_cfg({}); return self._send('<meta http-equiv=refresh content="0;url=/">')
+        if self.path == "/register":
+            f = self._form()
+            e, p2 = (f.get("e", "").strip().lower(), f.get("p2", ""))
+            if not e or len(p2) < 8:
+                return self._send(PAGE.replace("__BODY__", page_login("Email o contraseña corta (mín. 8)")))
+            r = api_register(e, p2)
+            if not r.get("ok"):
+                return self._send(PAGE.replace("__BODY__", page_login(r.get("error") or "No se pudo registrar")))
+            r2 = api_login(e, p2)
+            if r2.get("ok"):
+                save_cfg({"api_token": r2["api_token"], "domains": r2.get("domains", [])})
+                return self._send('<meta http-equiv=refresh content="0;url=/">')
+            return self._send(PAGE.replace("__BODY__", page_login("Cuenta creada — inicia sesión")))
         if self.path != "/login": return self._send(b"404", 404)
         f = self._form()
         u, p = (f.get("u", "").strip(), f.get("p", ""))
