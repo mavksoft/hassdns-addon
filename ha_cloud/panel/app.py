@@ -52,6 +52,7 @@ PAGE = """<!doctype html>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
 <style>
 :root{
+  color-scheme:dark;
   --bg:#07090e;--surface:#131a1f;--surface-2:#182128;--ink:#f4f7f8;--muted:#a9bcc4;
   --accent:#22d3ee;--accent-ink:#04141a;--line:#22303a;--ok:#2dd4bf;--bad:#f87171;--radius:10px;
 }
@@ -159,12 +160,22 @@ p.mut{color:var(--muted);font-size:.92rem;line-height:1.4;margin:0 0 18px}
 .flash.ok{background:rgba(45,212,191,0.12);color:#eafcff;border:1px solid rgba(45,212,191,0.3)}
 form.stack{display:flex;flex-direction:column;gap:14px}
 label{display:flex;flex-direction:column;gap:6px;font-size:.85rem;color:var(--muted);font-weight:500}
-input[type=text],input[type=password],input[type=email]{
+input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]),
+select, textarea {
   width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--line);
   color:var(--ink);border-radius:8px;padding:11px 13px;font:inherit;font-size:.95rem;
-  transition:border-color .15s,box-shadow .15s;
+  line-height:1.4;height:44px;transition:border-color .15s,box-shadow .15s;
 }
-input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(34,211,238,.18)}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(34,211,238,.18)}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #07090e inset !important;
+  -webkit-text-fill-color: #f4f7f8 !important;
+  caret-color: #f4f7f8 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
 button.btn-primary{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--accent);color:var(--accent-ink);border:0;border-radius:var(--radius);
@@ -291,7 +302,7 @@ def page_login(err=""):
   {flash}
   <form method="POST" action="/login" class="stack">
     <label>Usuario o email
-      <input name="u" autocomplete="username" required autofocus placeholder="Usuario o correo electrónico">
+      <input type="text" name="u" autocomplete="username" required autofocus placeholder="Usuario o correo electrónico">
     </label>
     <label>Contraseña
       <input name="p" type="password" autocomplete="current-password" required placeholder="Tu contraseña">

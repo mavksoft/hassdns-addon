@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.6
+- Fix CSS: estilo global para inputs (sin depender de type=text explícito), altura uniforme de 44px y control de autofill de llaveros/navegadores para mantener el tema oscuro.
+
 ## 1.3.5
 - Rediseño completo de la interfaz ingress: paridad visual con hassdns.com (fondo sutil de red y domótica, tarjeta centrada en ambos ejes con glassmorphism, tipografía General Sans).
 - Botón «Volver a Home Assistant» en la cabecera y tarjeta para retroceder y salir del panel sin quedar atrapado en la vista Ingress.
