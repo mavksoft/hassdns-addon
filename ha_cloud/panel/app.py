@@ -351,7 +351,7 @@ class H(http.server.BaseHTTPRequestHandler):
         p = self.path.split("?")[0]
         if p == "/logout":
             save_cfg({})
-            return self._send('<meta http-equiv="refresh" content="0;url=/">')
+            return self._send('<meta http-equiv="refresh" content="0;url=.">')
         if p == "/register":
             f = self._form()
             e, p2 = (f.get("e", "").strip().lower(), f.get("p2", ""))
@@ -363,7 +363,7 @@ class H(http.server.BaseHTTPRequestHandler):
             r2 = api_login(e, p2)
             if r2.get("ok"):
                 save_cfg({"api_token": r2["api_token"], "domains": r2.get("domains", [])})
-                return self._send('<meta http-equiv="refresh" content="0;url=/">')
+                return self._send('<meta http-equiv="refresh" content="0;url=.">')
             return self._send(PAGE.replace("__BODY__", page_login("Cuenta creada correctamente — inicia sesión")))
         if p != "/login":
             return self._send(b"404 Not Found", 404, "text/plain")
@@ -375,7 +375,7 @@ class H(http.server.BaseHTTPRequestHandler):
         if not r.get("ok"):
             return self._send(PAGE.replace("__BODY__", page_login(r.get("error") or "Credenciales incorrectas")))
         save_cfg({"api_token": r["api_token"], "domains": r.get("domains", [])})
-        self._send('<meta http-equiv="refresh" content="0;url=/">')
+        self._send('<meta http-equiv="refresh" content="0;url=.">')
 
 if __name__ == "__main__":
     http.server.HTTPServer(("0.0.0.0", 8099), H).serve_forever()

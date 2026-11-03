@@ -43,3 +43,6 @@
 
 ## 1.0.0
 - Primera versión: update de IP + certificado Let's Encrypt por DNS-01.
+
+## 1.3.5
+- Panel: rutas relativas (action=login/logout/register, refresh url=.) — bajo ingress las absolutas iban a la raíz del dominio → 404.
