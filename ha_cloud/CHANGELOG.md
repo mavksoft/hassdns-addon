@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.6.1
+- «Volver a Home Assistant»: tras guardar vuelve a la ficha del add-on derivando el slug real de la ruta de HA (antes se quedaba en el panel con history.back). Fallback a history.back si no se puede.
+
+## 1.6.0
+- Idioma automático: el panel se muestra en el idioma del usuario de Home Assistant (en/es/de/fr/it/pt, detectado por Accept-Language).
+- Un solo botón «Volver» (se quitó el duplicado).
+- Al «Guardar selección»: página de confirmación «✓ Configuración guardada» con retorno automático a Home Assistant.
+
+## 1.5.1
+- POST→Redirect→GET en login/selección/logout: ya no aparece el aviso «¿reenviar formulario?» al ir atrás.
+- Logging del write-back (`[panel] …`) para diagnosticar si el Supervisor rechaza la escritura de opciones.
+
+## 1.5.0
+- El login escribe la selección en las OPCIONES del add-on (pestaña Configuración) vía Supervisor API y reinicia para aplicarlas — antes solo se guardaba en /data y la Configuración quedaba vacía.
+- config.yaml: `hassio_api` + rol `manager` (para escribir self-options), `token` opcional.
+- run.sh: arranca el panel siempre (sin dominios no aborta: se puede entrar a hacer login); IP enrutada por proveedor (propio/DuckDNS).
+
 ## 1.4.2
 - Fix CSS: `label{flex-direction:column}` del rediseño apilaba las filas de subdominios — `.dom-row` ahora fuerza `flex-direction:row`.
 

@@ -272,6 +272,16 @@ details summary:hover{color:var(--accent)}
 </style>
 <script>
 function goBackHA(){
+  // Vuelve a la FICHA del add-on en HA derivando el slug real de la ruta
+  // (p. ej. /hassio/ingress/<slug> → /hassio/addon/<slug>/info). El slug lleva
+  // prefijo de repo (de9534df_ha_cloud), por eso no se puede fijar a mano.
+  try{
+    var top = window.top;
+    if(top && top !== window){
+      var m = (top.location.pathname||'').match(/\/hassio\/(?:ingress|addon)\/([^\/?#]+)/);
+      if(m && m[1]){ top.location.assign('/hassio/addon/'+m[1]+'/info'); return; }
+    }
+  }catch(e){}
   try{ if(window.parent&&window.parent!==window){window.parent.history.back();return;} }catch(e){}
   try{ if(window.top&&window.top!==window){window.top.history.back();return;} }catch(e){}
   window.history.back();
