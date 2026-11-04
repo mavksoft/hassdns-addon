@@ -278,7 +278,7 @@ function goBackHA(){
   try{
     var top = window.top;
     if(top && top !== window){
-      var m = (top.location.pathname||'').match(/\/hassio\/(?:ingress|addon)\/([^\/?#]+)/);
+      var m = (top.location.pathname||'').match(new RegExp('/hassio/(?:ingress|addon)/([^/?#]+)'));
       if(m && m[1]){ top.location.assign('/hassio/addon/'+m[1]+'/info'); return; }
     }
   }catch(e){}
