@@ -3,12 +3,37 @@
 # Seguridad: solo escucha el puerto de ingress (supervisor proxyfica y autentica),
 # password NUNCA se persiste — solo el api_token resultante (config 600).
 # Idioma: se detecta del Accept-Language del usuario de Home Assistant.
-import json, os, ssl, urllib.request, urllib.error, http.server, secrets, subprocess, threading
+import json, os, ssl, urllib.request, urllib.error, http.server, secrets, subprocess, threading, re, hashlib, time
 
 DATA = "/data/panel_config.json" if os.path.exists("/data") else "/tmp/panel_config.json"
 API  = "https://hassdns.com"
 SUP       = "http://supervisor"
 SUP_TOKEN = os.environ.get("SUPERVISOR_TOKEN", "")
+
+SEC_INGEST_KEY = "sec_a4d6ad109145366cb7a538c4ef320942a00a8d2059699dba9a95c210"
+SEC_INGEST_URL = "https://soporte.it-sistemas.es/api/security_event.php"
+SCAN_RE = re.compile(r'(\.env|wp-admin|wp-login|wp-content|xmlrpc\.php|phpmyadmin|\.git|\.aws|actuator|eval-stdin|etc/passwd|\.php\d*|cgi-bin|\.bak|\.sql|\.old|\.swp)', re.I)
+
+def report_sec_event(ip, uri, method, code, ua, ref, is_attack):
+    try:
+        payload = json.dumps({
+            "site": "hassdns-addon",
+            "incident": hashlib.md5(f"{ip}{uri}{time.time()}".encode()).hexdigest()[:10].upper(),
+            "code": code,
+            "method": method,
+            "uri": uri[:255],
+            "ip": ip,
+            "ua": ua[:190],
+            "referer": ref[:190],
+            "attack": is_attack
+        }).encode("utf-8")
+        req = urllib.request.Request(SEC_INGEST_URL, data=payload, headers={
+            "Content-Type": "application/json",
+            "X-Sec-Key": SEC_INGEST_KEY
+        })
+        urllib.request.urlopen(req, timeout=1.0)
+    except Exception:
+        pass
 
 # ── i18n ─────────────────────────────────────────────────────────────────────
 STR = {
@@ -419,11 +444,20 @@ class H(http.server.BaseHTTPRequestHandler):
         if n > 8192: return {}
         from urllib.parse import parse_qs
         return {k: v[0] for k, v in parse_qs(self.rfile.read(n).decode()).items()}
+    def _handle_404(self):
+        uri = self.path
+        ip = self.client_address[0] if (self.client_address and len(self.client_address) > 0) else "127.0.0.1"
+        ua = self.headers.get("User-Agent", "Unknown")
+        ref = self.headers.get("Referer", "-")
+        is_attack = bool(SCAN_RE.search(uri))
+        threading.Thread(target=report_sec_event, args=(ip, uri, self.command, 404, ua, ref, is_attack), daemon=True).start()
+        body = b"<!doctype html><meta charset=utf-8><title>404 Not Found</title><body style='font-family:sans-serif;padding:40px;background:#0f172a;color:#f8fafc'><h2>404 - No encontrado</h2><p>El recurso solicitado no existe.</p>"
+        return self._send(body, 404, "text/html; charset=utf-8")
     def do_GET(self):
         from urllib.parse import urlparse, parse_qs
         lang = self._lang()
         u = urlparse(self.path)
-        if u.path not in ("/", ""): return self._send(b"404 Not Found", 404, "text/plain")
+        if u.path not in ("/", ""): return self._handle_404()
         if parse_qs(u.query).get("saved"):
             return self._send(shell(page_saved(lang), lang))
         cfg = load_cfg()
@@ -462,7 +496,7 @@ class H(http.server.BaseHTTPRequestHandler):
                 return self._redirect(".")
             return self._send(shell(page_login(t(lang, "reg_ok_login"), lang), lang))
         if p != "/login":
-            return self._send(b"404 Not Found", 404, "text/plain")
+            return self._handle_404()
         f = self._form()
         u, pw = (f.get("u", "").strip(), f.get("p", ""))
         if not u or not pw:
